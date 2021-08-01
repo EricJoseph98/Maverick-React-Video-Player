@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
@@ -18,10 +18,6 @@ import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Popover from "@material-ui/core/Popover";
 
 const useStyles = makeStyles({
-    playerWrapper: {
-      width: "100%",
-      position: "relative",
-    },
     controlsWrapper: {
       position: "absolute",
       top: 0, left: 0, right: 0, bottom: 0,
@@ -92,9 +88,10 @@ const PrettoSlider = withStyles({
 })(Slider);
 
 
-function ControlsComponent({ onPlayPause, playing, onRewind, onFastForward, 
+export default forwardRef (({ onPlayPause, playing, onRewind, onFastForward, 
   muted, onMuted, volume, onVolumeChange, onVolumeSeekUp, playbackRate, onPlaybackRateChanged,
-  onToggleFullScreen, played, onSeek, onSeekMouseDown, onSeekMouseUp, elapsedTime, totalDuration }){
+  onToggleFullScreen, played, onSeek, onSeekMouseDown, onSeekMouseUp, elapsedTime, totalDuration, 
+  onChangedDisplayFormat, onBookmark }, ref) => {
     
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -111,7 +108,7 @@ function ControlsComponent({ onPlayPause, playing, onRewind, onFastForward,
     const id = open ? "playbackrate-popover" : undefined;
 
     return(
-    <div className={classes.controlsWrapper}>
+    <div className={classes.controlsWrapper} ref={ref}>
     {/* Top controls */}
     <Grid container direction="row" alignItems="center" justify="space-between" style={{ padding: 16 }}>
         <Grid item>
@@ -119,7 +116,7 @@ function ControlsComponent({ onPlayPause, playing, onRewind, onFastForward,
         </Grid>
 
         <Grid item>
-            <Button variant="contained" color="primary" startIcon={ <Bookmark/> }>Bookmark</Button>
+            <Button onClick={onBookmark} variant="contained" color="primary" startIcon={ <Bookmark/> }>Bookmark</Button>
         </Grid>
     </Grid>
 
@@ -166,7 +163,7 @@ function ControlsComponent({ onPlayPause, playing, onRewind, onFastForward,
               onChangeCommited={onVolumeSeekUp}
             />
 
-            <Button variant="text" style={{ color: "#fff", marginLeft: 16 }}>
+            <Button onClick={onChangedDisplayFormat} variant="text" style={{ color: "#fff", marginLeft: 16 }}>
               <Typography>{elapsedTime}/{totalDuration}</Typography>
             </Button>
           </Grid>
@@ -197,6 +194,4 @@ function ControlsComponent({ onPlayPause, playing, onRewind, onFastForward,
         </Grid>
   </div>
   );
-}
-
-export default ControlsComponent;
+});
