@@ -11,6 +11,7 @@ import screenfull from 'screenfull';
 
 import ControlsComponent from './components/ControlsComponent';
 import Grid from '@material-ui/core/Grid';
+import { Button } from '@material-ui/core';
 
 const useStyles = makeStyles({
   playerWrapper: {
@@ -78,6 +79,9 @@ function App() {
 
   const [timeDisplayFormat, setTimeDisplayFormat] = useState("normal");
   const [bookmarks, setBookmarks] = useState([]);
+  
+  let [url, setUrl] = useState('');
+  let [videoUrl, setVideoUrl] = useState('');
 
   const { playing, muted, volume, playbackRate, played, seeking } = state;
 
@@ -194,6 +198,11 @@ function App() {
     count = 0;
   }
 
+  const loadUrl = () => {
+    handlePlayPause();
+    setVideoUrl(url);
+  }
+
   const currentTime = playerRef.current ? playerRef.current.getCurrentTime() : "00:00";
   const duration = playerRef.current ? playerRef.current.getDuration() : "00:00";
   
@@ -207,15 +216,30 @@ function App() {
             <Typography variant="h6">React Video Player</Typography>
         </Toolbar>
       </AppBar>
+      
       <Toolbar/>
+      
+      <Container maxWidth="md">
+            <div>
+                <input type="text" name="url" onChange={e => setUrl(e.target.value)}/>
+                <Button onClick={() => loadUrl()}>Click to load Url</Button>
+            </div>
+      </Container>
+
       <Container maxWidth="md">
         <div ref={playerContainerRef} className={classes.playerWrapper}
             onMouseMove={handleMouseMove} >
 
-          <ReactPlayer playing={playing} muted={muted} volume={volume} playbackRate={playbackRate} 
+          {/* <ReactPlayer playing={playing} muted={muted} volume={volume} playbackRate={playbackRate} 
           ref={playerRef} onProgress={handleProgress} 
           width={"100%"} height="100%"
           url="https://www.youtube.com/watch?v=r6qWEteVMyM&list=PL4OKShK9gkQca9QVqmnPMzT6QYM2LHaqt&index=3"
+          config={{ file: { attributes : {crossorigin: "anonymous" }} }}/> */}
+          
+          <ReactPlayer playing={playing} muted={muted} volume={volume} playbackRate={playbackRate} 
+          ref={playerRef} onProgress={handleProgress} 
+          width={"100%"} height="100%"
+          url={videoUrl}
           config={{ file: { attributes : {crossorigin: "anonymous" }} }}/>
 
           <ControlsComponent ref={controlRef} playing={playing} muted={muted} volume={volume} onPlayPause={handlePlayPause} 
